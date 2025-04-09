@@ -5,6 +5,8 @@ import fs from 'fs'
 import which from 'which'
 import yaml from 'yaml'
 
+import { MarkdownParser } from '../../../core/src/compiler/parser/markdown'
+
 /**
  * Infer the output file name from the source file name
  *
@@ -85,8 +87,12 @@ export function generateTeX(source: string) {
   const texFile = inferOutput(source)
 
   const resume = fs.readFileSync(source, 'utf8')
+  const summaryParser = new MarkdownParser()
 
-  const renderer = getResumeRenderer(yaml.parse(resume) as Resume)
+  const renderer = getResumeRenderer(
+    yaml.parse(resume) as Resume,
+    summaryParser
+  )
   const tex = renderer.render()
 
   fs.writeFileSync(texFile, tex)
